@@ -13,7 +13,6 @@
 
 using namespace std;
 
-
 ros::Publisher demoSound_pub;
 sound_play::SoundRequest sayMsg;
 
@@ -53,7 +52,6 @@ void pausa(double seconds){
 	while (goal > clock());
 }
 
-
 void imprimirEstados(){
 
 	for(int i=0; i<=ocupacionMesas.size()-1; i++){
@@ -70,13 +68,11 @@ void face_tracker(const uv_msgs::ImageBoundingBoxListStamped::ConstPtr& facesbBo
 	}
 }
 
-
 //Función para detectar cuando el robot llegó a su destino.
 int status_id = 0;
 void navStatusCallBack(const actionlib_msgs::GoalStatusArray::ConstPtr &status){
-
     status_id = 0;
-
+	
     if (!status->status_list.empty()){
     	actionlib_msgs::GoalStatus goalStatus = status->status_list[0];
     	status_id = goalStatus.status;
@@ -94,7 +90,6 @@ void navStatusCallBack(const actionlib_msgs::GoalStatusArray::ConstPtr &status){
 
 
 void decirFrase(string frase){
-
 	sayMsg.sound=-3;
 	sayMsg.command=1;
 	sayMsg.arg2 = "voice_kal_diphone";
@@ -112,9 +107,7 @@ double tiempoActual;
 
 //Estado 1. Detectar clientes en la recepción.
 void estado1(){
-
 	if(rostroDetectado and Estado1){
-	
 		imprimirEstados();
 		decirFrase("Hello my name is UVerto, can I help you?");
 		pausa(3);
@@ -126,13 +119,9 @@ void estado1(){
 		pausa(2);
 		
 		//Codigo para determinar mesa;
-		
 		if(num_personas<4){
-		
 			for(int i=0; i<=ocupacionMesas.size()-1; i++){
-			
 				if(!ocupacionMesas[i][0]){
-				
 					ocupacionMesas[i][0]=1;
 					coordPosx = coordenadasMesas[i+1][0];
 					coordPosy = coordenadasMesas[i+1][1];
@@ -143,27 +132,19 @@ void estado1(){
 		}
 		
 		else if(num_personas==4){
-		
 			if(!galerasOcupadas){
-			
-			for(int i=2; i<=ocupacionMesas.size()-1; i++){
-			
-				if(!ocupacionMesas[i][0]){
-				
-					ocupacionMesas[i][0]=1;
-					coordPosx = coordenadasMesas[i+1][0];
-					coordPosy = coordenadasMesas[i+1][1];
-					coordOrz = coordenadasMesas[i+1][2];
-					
-					if(ocupacionMesas[3][0]){
-						
-						galerasOcupadas=true;
+				for(int i=2; i<=ocupacionMesas.size()-1; i++){
+					if(!ocupacionMesas[i][0]){
+						ocupacionMesas[i][0]=1;
+						coordPosx = coordenadasMesas[i+1][0];
+						coordPosy = coordenadasMesas[i+1][1];
+						coordOrz = coordenadasMesas[i+1][2];
+						if(ocupacionMesas[3][0]){
+							galerasOcupadas=true;
+						}
+						break;
 					}
-					
-					break;
 				}
-			}
-			
 			}
 			
 			else if(galerasOcupadas and ocupacionMesas[1][0]){
@@ -174,11 +155,8 @@ void estado1(){
 			}
 			
 			else if(galerasOcupadas and !ocupacionMesas[1][0]){
-			
 				for(int i=0; i<=1; i++){
-					
 					if(!ocupacionMesas[i][0]){
-						
 						ocupacionMesas[i][0]=1;
 						coordPosx = coordenadasMesas[i+1][0];
 						coordPosy = coordenadasMesas[i+1][1];
@@ -190,16 +168,13 @@ void estado1(){
 		}
 		
 		else{
-		
 			decirFrase("Our tables have a maximum capacity of four persons, i am sorry, i can not attend you");
 			pausa(10.0);
 			rostroDetectado = false;
 		}
 		
-		//Actualización de estados.
-		
+		// Actualización de estados.
 		if(rostroDetectado){
-		
 			Estado1=false;
 			Estado2=true;
 			tiempoPausaQ = tiempoPausa*CLOCKS_PER_SEC + clock();
@@ -211,9 +186,7 @@ void estado1(){
 //Estado 2. Llevar a los clientes a su mesa.
 bool fase2 = false;
 void estado2(double x, double y, double z){
-	
 	if(Estado2){
-	
 		newPosition.pose.position.x=x;
 		newPosition.pose.position.y=y;
 		newPosition.pose.orientation.z=z;
@@ -237,12 +210,9 @@ void estado2(double x, double y, double z){
 	}
 }
 
-
 //Estado 3. Volver a la recepción.
 void estado3(double x, double y, double z){
-
 	if(Estado3){
-		
 		newPosition.pose.position.x=x;
 		newPosition.pose.position.y=y;
 		newPosition.pose.orientation.z=z;
@@ -264,12 +234,7 @@ void estado3(double x, double y, double z){
 }
 
 
-
-
-
 int main(int argc, char** argv){
-
-
 
 
 ros::init(argc, argv, "robotAnfitrion");
@@ -286,7 +251,6 @@ move_base_status_sub = n.subscribe<actionlib_msgs::GoalStatusArray>("/move_base/
 tiempoPausaQ = tiempoPausa*CLOCKS_PER_SEC + clock();
 
 while (ros::ok()){
-  
     newPosition.header.stamp==ros::Time::now();
 	newPosition.header.frame_id="map";
 	
@@ -298,6 +262,5 @@ while (ros::ok()){
 	cont++;
 	ros::spinOnce();
 }
-  
     return 0;
 }
