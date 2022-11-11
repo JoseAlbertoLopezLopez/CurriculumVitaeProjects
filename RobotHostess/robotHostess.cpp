@@ -24,9 +24,9 @@ const float mesa4[3] = {3.2, 15.5, 0.0};
 
 const float coordenadasMesas[5][3] = {{10.2, 14.0, 2.2}, //position.x,position.y,orientation.z
 								      {8.5, 15.0, 0.0},
-									  {5.0, 15.5, 0.0},
-									  {3.3, 14.2, 0.2},
-									  {3.2, 15.5, 0.0}};
+								      {5.0, 15.5, 0.0},
+								      {3.3, 14.2, 0.2},
+								      {3.2, 15.5, 0.0}};
 									  
 float coordPosx;
 float coordPosy;
@@ -47,21 +47,17 @@ bool Estado3 = false;
 bool rostroDetectado = false;
 
 void pausa(double seconds){
-
 	clock_t goal = seconds*CLOCKS_PER_SEC + clock();
 	while (goal > clock());
 }
 
 void imprimirEstados(){
-
 	for(int i=0; i<=ocupacionMesas.size()-1; i++){
-	
 		cout << "Mesa " << i+1 << " = " << ocupacionMesas[i][0] << endl;
 	}
 }
 
 void face_tracker(const uv_msgs::ImageBoundingBoxListStamped::ConstPtr& facesbBox){
-
 	if(!rostroDetectado){
 		cout << "Rostro detectado." << endl;
 		rostroDetectado = true;
@@ -97,13 +93,11 @@ void decirFrase(string frase){
 	demoSound_pub.publish(sayMsg);
 }
 
-
 geometry_msgs::PoseStamped newPosition;
 
 clock_t tiempoPausaQ;
 double tiempoPausa = 4.0;
 double tiempoActual;
-
 
 //Estado 1. Detectar clientes en la recepción.
 void estado1(){
@@ -181,7 +175,6 @@ void estado1(){
 		}
 	}
 }
-
 
 //Estado 2. Llevar a los clientes a su mesa.
 bool fase2 = false;
